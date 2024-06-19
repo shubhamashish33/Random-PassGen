@@ -16,7 +16,7 @@
 
 h1 {
     text-align: center;
-    font-size: 48px;
+    font-size: 3rem;
     font-weight: bolder;
 }
 
@@ -187,4 +187,52 @@ h1 {
     border: solid black;
     border-width: 0 3px 3px 0;
     transform: rotate(45deg);
+}
+
+@media only screen and (max-width: 1000px) {
+
+    .container,
+    .container1 {
+        width: 100%;
+        margin: auto;
+    }
+
+    .container {
+        margin: 0px;
+        overflow-x: hidden;
+        padding: 10px;
+    }
+
+    .container2 {
+        width: 100%;
+    }
+
+    .inputcontainer input {
+        width: 100%;
+    }
+
+    .container1 {
+        display: contents;
+        text-align: center;
+    }
+
+
+    .inputcontainer {
+        margin: auto;
+        position: relative;
+    }
+
+    h1 {
+        width: 100%;
+    }
+
+    .container2 {
+        width: 90%;
+    }
+
+    .btn {
+        margin-top: 20px;
+        margin-left: 35%;
+    }
+
 }
