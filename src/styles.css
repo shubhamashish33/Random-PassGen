@@ -16,7 +16,8 @@ footer {
     text-align: center;
     opacity: 20%;
     position: absolute;
-    bottom: 5%;
-    left: 45%;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
     user-select: none;
 }

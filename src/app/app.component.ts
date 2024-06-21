@@ -12,34 +12,44 @@ export class AppComponent {
   isLowerCase: boolean = true;
   isNumber: boolean = true;
   isSpecialChar: boolean = false;
+  isDisabled: boolean = false;
   tag: string;
   colorname: string;
   showToastMessage: boolean = false;
-  tagEle: HTMLLabelElement = document.getElementById('tag') as HTMLLabelElement;
   rangeValue: number = this.passwordLength;
   ngOnInit(): void {
     this.generateRandomChar();
   }
   generateRandomChar(): void {
-    const upperCaseChar: string = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    const lowerCaseChar: string = "abcdefghijklmnopqrstuvwxyz";
-    const numberChar: string = "123456789";
-    const specialChar: string = "!@#$%^&*()_+=[]{}|\:;<>?/~";
-    let availableChar: string = "";
-    if (this.isUpperCase) {
-      availableChar += upperCaseChar
+    if (!(this.isUpperCase || this.isLowerCase || this.isNumber || this.isSpecialChar)) {
+      this.generatedPassword = "Please select one value";
+      this.isDisabled = true;
+      this.tag = "NA";
+      this.colorname = "#ddd";
+      return;
     }
-    if (this.isLowerCase) {
-      availableChar += lowerCaseChar
+    else {
+      const upperCaseChar: string = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+      const lowerCaseChar: string = "abcdefghijklmnopqrstuvwxyz";
+      const numberChar: string = "123456789";
+      const specialChar: string = "!@#$%^&*()_+=[]{}|\:;<>?/~";
+      let availableChar: string = "";
+      if (this.isUpperCase) {
+        availableChar += upperCaseChar
+      }
+      if (this.isLowerCase) {
+        availableChar += lowerCaseChar
+      }
+      if (this.isNumber) {
+        availableChar += numberChar
+      }
+      if (this.isSpecialChar) {
+        availableChar += specialChar
+      }
+      this.generatePassword(availableChar);
+      this.getTag();
+      this.isDisabled = false;
     }
-    if (this.isNumber) {
-      availableChar += numberChar
-    }
-    if (this.isSpecialChar) {
-      availableChar += specialChar
-    }
-    this.generatePassword(availableChar);
-    this.getTag();
   }
   generatePassword(password: string): void {
     this.generatedPassword = '';
