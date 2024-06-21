@@ -1,44 +1,50 @@
-<div class="container">
-  <h1> {{name | titlecase}} </h1>
-  <h5 style="text-align: center; padding: 20px; font-weight: 400;">Generate a strong and secure password to protect your
-    account.</h5>
-  <div class="container1">
-    <div class="inputcontainer">
-      <input type="text" [(ngModel)]="generatedPassword" disabled>
-      <label id="tag" class="tag" style="background-color: {{colorname}}">{{tag}}</label>
-    </div>
-    <button class="btn" (click)="copyText()" style="background-color: {{colorname}}">Copy</button>
+<div class="bigcontainer">
+  <div class="leftcontainer">
+    <img src="../assets/images/lockimg.png" alt="">
   </div>
-  <div class="container2">
-    <div class="showtoashmessage" *ngIf="showToastMessage">
-      <h2> Password copied to clipboard!</h2>
-    </div>
-    <div class="rangecontainer">
-      <p> Password Length: <b>{{passwordLength}}</b> </p>
-      <div class="rangecontainer1">
-        <button (click)="decreaseLength()" class="rangeBtn"> - </button>
-        <input type="range" id="rangeValue" min="1" max="50" value="12" (input)="valueChanged($event.target)"
-          [(ngModel)]="rangeValue">
-        <button (click)="incraseLength()" class="rangeBtn">+</button>
+  <div class="rightcontainer">
+    <h1> {{name | titlecase}} </h1>
+    <h5 style="text-align: center; padding: 20px; font-weight: 400;">Generate a strong and secure password to protect
+      your
+      account.</h5>
+    <div class="container1">
+      <div class="inputcontainer">
+        <input type="text" [(ngModel)]="generatedPassword" disabled style="border: 1px solid {{colorname}};">
+        <label id="tag" class="tag" style="background-color: {{colorname}}">{{tag}}</label>
       </div>
+      <button class="btn" (click)="copyText()" style="background-color: {{colorname}}">Copy</button>
     </div>
-    <div class="labelcontainer">
-      <label for="number" class="custom-checkbox">
-        <input type="checkbox" id="number" [(ngModel)]="isNumber" (change)="generateRandomChar()">
-        <span class="checkmark"></span>
-        123</label>
-      <label for="uppercase" class="custom-checkbox">
-        <input type="checkbox" id="uppercase" [(ngModel)]="isUpperCase" (change)="generateRandomChar()">
-        <span class="checkmark"></span>
-        ABC</label>
-      <label for="lowercase" class="custom-checkbox">
-        <input type="checkbox" id="lowercase" [(ngModel)]="isLowerCase" (change)="generateRandomChar()">
-        <span class="checkmark"></span>
-        abc</label>
-      <label for="specialchar" class="custom-checkbox">
-        <input type="checkbox" id="specialchar" [(ngModel)]="isSpecialChar" (change)="generateRandomChar()">
-        <span class="checkmark"></span>
-        #$&</label>
+    <div class="container2">
+      <div class="showtoashmessage" *ngIf="showToastMessage">
+        <h2> Password copied to clipboard!</h2>
+      </div>
+      <div class="rangecontainer">
+        <p> Password Length: <b>{{passwordLength}}</b> </p>
+        <div class="rangecontainer1">
+          <button (click)="decreaseLength()" class="rangeBtn"> - </button>
+          <input type="range" id="rangeValue" min="1" max="50" value="12" (input)="valueChanged($event.target)"
+            [(ngModel)]="rangeValue">
+          <button (click)="incraseLength()" class="rangeBtn">+</button>
+        </div>
+      </div>
+      <div class="labelcontainer">
+        <label for="number" class="custom-checkbox">
+          <input type="checkbox" id="number" [(ngModel)]="isNumber" (change)="generateRandomChar()">
+          <span class="checkmark"></span>
+          123</label>
+        <label for="uppercase" class="custom-checkbox">
+          <input type="checkbox" id="uppercase" [(ngModel)]="isUpperCase" (change)="generateRandomChar()">
+          <span class="checkmark"></span>
+          ABC</label>
+        <label for="lowercase" class="custom-checkbox">
+          <input type="checkbox" id="lowercase" [(ngModel)]="isLowerCase" (change)="generateRandomChar()">
+          <span class="checkmark"></span>
+          abc</label>
+        <label for="specialchar" class="custom-checkbox">
+          <input type="checkbox" id="specialchar" [(ngModel)]="isSpecialChar" (change)="generateRandomChar()">
+          <span class="checkmark"></span>
+          #$&</label>
+      </div>
     </div>
   </div>
 </div>
