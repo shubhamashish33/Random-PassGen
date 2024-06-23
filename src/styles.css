@@ -10,14 +10,18 @@
 
 body {
     margin: 0px;
+    user-select: none;
 }
 
 footer {
     text-align: center;
     opacity: 20%;
-    position: absolute;
     bottom: 15px;
     left: 50%;
-    transform: translateX(-50%);
     user-select: none;
+}
+
+a {
+    text-decoration: none;
+    color: black;
 }
