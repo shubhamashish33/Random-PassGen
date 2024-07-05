@@ -5,26 +5,28 @@
   <div class="rightcontainer">
     <h1> {{name | titlecase}} </h1>
     <h5 style="text-align: center; padding: 20px; font-weight: 400;">Generate a strong and secure password to protect
-      your
-      account.</h5>
+      your account.</h5>
     <div class="container1">
       <div class="inputcontainer">
-        <input type="text" [(ngModel)]="generatedPassword" disabled style="border: 1px solid {{colorname}};">
-        <label id="tag" class="tag" style="background-color: {{colorname}}">{{tag}}</label>
+        <input type="text" [(ngModel)]="generatedPassword" disabled [ngStyle]="{'border': '1px solid ' + colorname}">
+        <label id="tag" class="tag" [style.background-color]="colorname">{{tag}}</label>
       </div>
-      <button class="btn" (click)="copyText()" [disabled]="isDisabled"
-        style="background-color: {{colorname}}">Copy</button>
+      <div class="btn-container">
+        <button class="btn" (click)="copyText()" [disabled]="isDisabled" [style.background-color]="colorname">{{
+          buttonText }}</button>
+      </div>
     </div>
     <div class="container2">
       <div class="showtoashmessage" *ngIf="showToastMessage">
         <h2> Password copied to clipboard!</h2>
       </div>
       <div class="rangecontainer">
+        <p class="timeStamp"> Time to break password : {{this.timeStamp}}</p>
         <p> Password Length: <b>{{passwordLength}}</b> </p>
         <div class="rangecontainer1">
           <button (click)="decreaseLength()" class="rangeBtn" [disabled]="isDisabled"> - </button>
-          <input type="range" id="rangeValue" min="1" max="50" value="12" (input)="valueChanged($event.target)"
-            [(ngModel)]="rangeValue" [disabled]="isDisabled">
+          <input type="range" id="rangeValue" [min]="minLengthValue" [max]="maximumLengthValue" value="12"
+            (input)="valueChanged($event.target)" [(ngModel)]="rangeValue" [disabled]="isDisabled">
           <button (click)="incraseLength()" class="rangeBtn" [disabled]="isDisabled">+</button>
         </div>
       </div>

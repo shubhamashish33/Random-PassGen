@@ -23,7 +23,6 @@ h1 {
 
 .container1 {
     text-align: center;
-    width: 70%;
     margin: auto;
     display: flex;
     justify-content: space-around;
@@ -46,7 +45,12 @@ h1 {
     transition: all 0.5s ease-in-out;
 }
 
+.btn-container {
+    position: relative;
+}
+
 .btn {
+    position: absolute;
     border: none;
     text-align: center;
     box-shadow: 0px 8px 32px -16px rgba(0, 112, 246, 0.32), 0px 16px 32px -16px rgba(7, 29, 43, 0.32);
@@ -56,11 +60,11 @@ h1 {
     border-radius: 28px;
     cursor: pointer;
     font-weight: 600;
+    right: 30px;
 }
 
 button {
     transition: transform 0.3s ease;
-
 }
 
 button:hover {
@@ -139,12 +143,34 @@ input[type="range"]:hover::-ms-thumb {
 }
 
 .showtoashmessage {
-    background-color: rgba(144, 238, 144, 0.653);
+    position: absolute;
+    background-color: rgb(144, 238, 144);
     color: rgb(15, 72, 15);
-    transition: .2s all;
     border-radius: 12px;
-    padding: 10px;
-    transition: 2s linear;
+    padding: 20px;
+    animation: fadeInSlideDown 0.6s ease-out;
+}
+
+@keyframes fadeInSlideDown {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.timeStamp {
+    font-size: 16px;
+    padding-bottom: 30px;
+    font-family: Consolas;
+    text-align: justify;
+    height: 80px;
+    width: 18.75rem;
+    margin: auto;
 }
 
 .rangecontainer {
@@ -284,7 +310,6 @@ input[type="range"]:hover::-ms-thumb {
         text-align: center;
     }
 
-
     .inputcontainer {
         margin: auto;
         position: relative;
@@ -299,8 +324,21 @@ input[type="range"]:hover::-ms-thumb {
     }
 
     .btn {
+        position: static;
         margin-top: 20px;
-        margin-left: 35%;
     }
 
+    .btn-container {
+        text-align: center;
+    }
+}
+
+@media only screen and (min-width: 1000px) and (max-width: 1250px) {
+    .btn {
+        position: static;
+    }
+
+    .btn-container {
+        position: static;
+    }
 }
