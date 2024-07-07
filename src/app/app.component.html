@@ -21,7 +21,7 @@
         <h2> Password copied to clipboard!</h2>
       </div>
       <div class="rangecontainer">
-        <p class="timeStamp" *ngIf="!isDisabled"> Time to break password : {{this.timeStamp}}</p>
+        <p class="timeStamp"> Time to break password : {{this.timeStamp}}</p>
         <p> Password Length: <b>{{passwordLength}}</b> </p>
         <div class="rangecontainer1">
           <button (click)="decreaseLength()" class="rangeBtn" [disabled]="isDisabled"> - </button>

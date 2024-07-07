@@ -34,6 +34,7 @@ export class AppComponent {
       this.isDisabled = true;
       this.tag = "NA";
       this.colorname = "#ddd";
+      this.timeStamp = "NA";
       return;
     }
     else {
@@ -116,7 +117,7 @@ export class AppComponent {
     this.buttonText = 'Copied';
     this.isDisabled = true;
     navigator.clipboard.writeText(this.generatedPassword).then(() => {
-      console.log('Text copied to clipboard');
+      console.log('Password copied to clipboard');
       this.showToastMessage = true;
       setTimeout(() => {
         this.showToastMessage = false;
