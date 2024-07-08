@@ -10,8 +10,8 @@ export class AppComponent {
   passwordLength: number = 12;
   upperCaseChar: string = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
   lowerCaseChar: string = "abcdefghijklmnopqrstuvwxyz";
-  numberChar: string = "123456789";
-  specialChar: string = "!@#$%^&*()_+=[]{}|\:;<>?/~";
+  numberChar: string = "1234567890";
+  specialChar: string = "!@#$%^&*()_+-=[]{}|\:;<>?/~,.'`";
   isUpperCase: boolean = true;
   buttonText = 'Copy';
   isLowerCase: boolean = true;
