@@ -88,7 +88,7 @@ export class AppComponent {
     this.timeStamp = `${years} years, ${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
   }
   getTag(): void {
-    if (this.passwordLength > this.minLengthValue && this.passwordLength <= 5) {
+    if (this.passwordLength >= this.minLengthValue && this.passwordLength <= 5) {
       this.tag = 'Very Weak';
       this.colorname = '#FFDAB9';
     }
