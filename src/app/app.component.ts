@@ -10,8 +10,8 @@ export class AppComponent {
   passwordLength: number = 12;
   upperCaseChar: string = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
   lowerCaseChar: string = "abcdefghijklmnopqrstuvwxyz";
-  numberChar: string = "123456789";
-  specialChar: string = "!@#$%^&*()_+=[]{}|\:;<>?/~";
+  numberChar: string = "1234567890";
+  specialChar: string = "!@#$%^&*()_+-=[]{}|\:;<>?/~,.'`";
   isUpperCase: boolean = true;
   buttonText = 'Copy';
   isLowerCase: boolean = true;
@@ -34,6 +34,7 @@ export class AppComponent {
       this.isDisabled = true;
       this.tag = "NA";
       this.colorname = "#ddd";
+      this.timeStamp = "NA";
       return;
     }
     else {
@@ -87,7 +88,7 @@ export class AppComponent {
     this.timeStamp = `${years} years, ${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
   }
   getTag(): void {
-    if (this.passwordLength > this.minLengthValue && this.passwordLength <= 5) {
+    if (this.passwordLength >= this.minLengthValue && this.passwordLength <= 5) {
       this.tag = 'Very Weak';
       this.colorname = '#FFDAB9';
     }
@@ -116,7 +117,7 @@ export class AppComponent {
     this.buttonText = 'Copied';
     this.isDisabled = true;
     navigator.clipboard.writeText(this.generatedPassword).then(() => {
-      console.log('Text copied to clipboard');
+      console.log('Password copied to clipboard');
       this.showToastMessage = true;
       setTimeout(() => {
         this.showToastMessage = false;
