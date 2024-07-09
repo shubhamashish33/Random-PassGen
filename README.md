@@ -1,4 +1,4 @@
-# Random-PassGen
+# Random Password Generator
 
 ## Overview
 
