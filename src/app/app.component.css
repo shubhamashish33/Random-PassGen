@@ -144,11 +144,34 @@ input[type="range"]:hover::-ms-thumb {
 
 .showtoashmessage {
     position: absolute;
-    background-color: rgb(144, 238, 144);
+    overflow: hidden;
+    background-color: #fff;
     color: rgb(15, 72, 15);
     border-radius: 12px;
-    padding: 20px;
+    padding: 20px 30px;
+    box-shadow: 0px 0px 32px -16px rgba(0, 112, 246, 0.32), 0px 16px 32px -16px rgba(7, 29, 43, 0.32);
     animation: fadeInSlideDown 0.6s ease-out;
+}
+
+.showtoashmessage::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 10px;
+    width: 100%;
+    background-color: rgb(144, 238, 144);
+    animation: fillBar 3s linear forwards;
+}
+
+@keyframes fillBar {
+    from {
+        width: 100%;
+    }
+
+    to {
+        width: 0%;
+    }
 }
 
 @keyframes fadeInSlideDown {
