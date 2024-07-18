@@ -27,13 +27,13 @@
           </svg> Password copied to clipboard!</h4>
       </div>
       <div class="rangecontainer">
-        <p class="timeStamp"> Time to break password : {{this.timeStamp}}</p>
+        <p class="timeStamp"> Time to Decrypt the password : {{this.timeStamp}}</p>
         <p> Password Length: <b>{{passwordLength}}</b> </p>
         <div class="rangecontainer1">
-          <button (click)="decreaseLength()" class="rangeBtn" [disabled]="isDisabled"> - </button>
+          <button (click)="decreaseLength()" class="rangeBtn" [disabled]="isDisabled">-</button>
           <input type="range" id="rangeValue" [min]="minLengthValue" [max]="maximumLengthValue" value="12"
             (input)="valueChanged($event.target)" [(ngModel)]="rangeValue" [disabled]="isDisabled">
-          <button (click)="incraseLength()" class="rangeBtn" [disabled]="isDisabled">+</button>
+          <button (click)="increaseLength()" class="rangeBtn" [disabled]="isDisabled">+</button>
         </div>
       </div>
       <div class="labelcontainer">
@@ -56,4 +56,16 @@
       </div>
     </div>
   </div>
+  <ng-container *ngIf="previousSavedPass && previousSavedPass.length > 0">
+    <div class="saved-password">
+      <h2>Recent Passwords</h2>
+      <div class="stored-password" *ngFor="let password of previousSavedPass; let indx = index"
+        (click)="copyText(['savedPassword', indx])">
+        <p>{{password}}</p>
+        <span class="material-symbols-outlined" (click)="removeSavedPassword(indx)">
+          cancel
+        </span>
+      </div>
+    </div>
+  </ng-container>
 </div>

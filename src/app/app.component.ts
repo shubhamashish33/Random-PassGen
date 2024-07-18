@@ -25,8 +25,23 @@ export class AppComponent {
   minLengthValue: number = 4;
   maximumLengthValue: number = 20;
   timeStamp: string;
+  previousSavedPass: any = [];
   ngOnInit(): void {
     this.generateRandomChar();
+    this.getSavedPasswordOnLoad();
+  }
+  getSavedPasswordOnLoad() {
+    const savedLocalPass: string = localStorage.getItem('password');
+    if (savedLocalPass) {
+      const storedPass: string[] = savedLocalPass.split(",");
+      this.previousSavedPass = [...storedPass];
+    }
+    else if (this.previousSavedPass.length > 0) {
+      this.previousSavedPass;
+    }
+    else {
+      this.previousSavedPass = [];
+    }
   }
   generateRandomChar(): void {
     if (!(this.isUpperCase || this.isLowerCase || this.isNumber || this.isSpecialChar)) {
@@ -51,12 +66,12 @@ export class AppComponent {
       if (this.isSpecialChar) {
         availableChar += this.specialChar
       }
-      this.generatePassword(availableChar);
+      this.onGeneratePassword(availableChar);
       this.getTag();
       this.isDisabled = false;
     }
   }
-  generatePassword(password: string): void {
+  onGeneratePassword(password: string): void {
     this.generatedPassword = '';
     for (let i = 0; i < this.passwordLength; i++) {
       this.generatedPassword += password.charAt((Math.floor(Math.random() * password.length)))
@@ -113,11 +128,29 @@ export class AppComponent {
     this.passwordLength = e.value;
     this.generateRandomChar();
   }
-  copyText() {
+  removeSavedPassword(index: any) {
+    this.previousSavedPass.splice(index, 1);
+    localStorage.setItem('password', this.previousSavedPass);
+  }
+  copyText(requiredParam?: string) {
+    if (requiredParam) {
+      navigator.clipboard.writeText(this.previousSavedPass[requiredParam[1]]).then(() => {
+        this.showToastMessage = true;
+        setTimeout(() => {
+          this.showToastMessage = false;
+          this.buttonText = 'Copy';
+          this.isDisabled = false;
+        }, 3000)
+      }).catch(err => {
+        console.error('Failed to copy text: ', err);
+      });
+      return;
+    }
     this.buttonText = 'Copied';
     this.isDisabled = true;
     navigator.clipboard.writeText(this.generatedPassword).then(() => {
-      console.log('Password copied to clipboard');
+      this.previousSavedPass.push(this.generatedPassword);
+      localStorage.setItem('password', this.previousSavedPass);
       this.showToastMessage = true;
       setTimeout(() => {
         this.showToastMessage = false;
@@ -135,7 +168,7 @@ export class AppComponent {
       this.generateRandomChar();
     }
   }
-  incraseLength() {
+  increaseLength() {
     if (this.rangeValue < this.maximumLengthValue && this.passwordLength < this.maximumLengthValue) {
       this.passwordLength++;
       this.rangeValue++;
