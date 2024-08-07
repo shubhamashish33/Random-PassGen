@@ -329,6 +329,7 @@ input[type="range"]:hover::-ms-thumb {
 
     .leftcontainer {
         height: 200px;
+        margin: auto;
     }
 
     .leftcontainer img {
