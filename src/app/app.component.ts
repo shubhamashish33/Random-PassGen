@@ -26,21 +26,24 @@ export class AppComponent {
   maximumLengthValue: number = 20;
   timeStamp: string;
   previousSavedPass: any = [];
+  showStoredPass: boolean = false;
   ngOnInit(): void {
     this.generateRandomChar();
     this.getSavedPasswordOnLoad();
   }
   getSavedPasswordOnLoad() {
-    const savedLocalPass: string = localStorage.getItem('password');
-    if (savedLocalPass) {
-      const storedPass: string[] = savedLocalPass.split(",");
-      this.previousSavedPass = [...storedPass];
-    }
-    else if (this.previousSavedPass.length > 0) {
-      this.previousSavedPass;
-    }
-    else {
-      this.previousSavedPass = [];
+    if (this.showStoredPass) {
+      const savedLocalPass: string = localStorage.getItem('password');
+      if (savedLocalPass) {
+        const storedPass: string[] = savedLocalPass.split(",");
+        this.previousSavedPass = [...storedPass];
+      }
+      else if (this.previousSavedPass.length > 0) {
+        this.previousSavedPass;
+      }
+      else {
+        this.previousSavedPass = [];
+      }
     }
   }
   generateRandomChar(): void {
@@ -129,8 +132,10 @@ export class AppComponent {
     this.generateRandomChar();
   }
   removeSavedPassword(index: any) {
-    this.previousSavedPass.splice(index, 1);
-    localStorage.setItem('password', this.previousSavedPass);
+    if (this.showStoredPass) {
+      this.previousSavedPass.splice(index, 1);
+      localStorage.setItem('password', this.previousSavedPass);
+    }
   }
   copyText(requiredParam?: string) {
     if (requiredParam) {
@@ -150,7 +155,9 @@ export class AppComponent {
     this.isDisabled = true;
     navigator.clipboard.writeText(this.generatedPassword).then(() => {
       this.previousSavedPass.push(this.generatedPassword);
-      localStorage.setItem('password', this.previousSavedPass);
+      if (this.showStoredPass) {
+        localStorage.setItem('password', this.previousSavedPass);
+      }
       this.showToastMessage = true;
       setTimeout(() => {
         this.showToastMessage = false;
