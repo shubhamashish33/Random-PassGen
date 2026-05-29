@@ -1,13 +1,11 @@
-import { CommonModule } from '@angular/common';
+import { TitleCasePipe } from '@angular/common';
 import { Component, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
-    CommonModule,
-    FormsModule
+    TitleCasePipe
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
@@ -27,7 +25,6 @@ export class AppComponent {
   readonly showToastMessage = signal(false);
   readonly rangeValue = signal(this.passwordLength());
   readonly timeStamp = signal('');
-  readonly previousSavedPass = signal<string[]>([]);
   readonly upperCaseChar = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   readonly lowerCaseChar = 'abcdefghijklmnopqrstuvwxyz';
   readonly numberChar = '1234567890';
@@ -49,46 +46,19 @@ export class AppComponent {
       return;
     }
 
-    let availableChar = '';
-    if (this.isUpperCase()) {
-      availableChar += this.upperCaseChar;
-    }
-    if (this.isLowerCase()) {
-      availableChar += this.lowerCaseChar;
-    }
-    if (this.isNumber()) {
-      availableChar += this.numberChar;
-    }
-    if (this.isSpecialChar()) {
-      availableChar += this.specialChar;
-    }
-
     this.onGeneratePassword();
     this.getTag();
     this.isDisabled.set(false);
   }
 
   onGeneratePassword(): void {
-    const selectedGroups: string[] = [];
-
-    if (this.isUpperCase()) {
-      selectedGroups.push(this.upperCaseChar);
-    }
-    if (this.isLowerCase()) {
-      selectedGroups.push(this.lowerCaseChar);
-    }
-    if (this.isNumber()) {
-      selectedGroups.push(this.numberChar);
-    }
-    if (this.isSpecialChar()) {
-      selectedGroups.push(this.specialChar);
-    }
+    const selectedGroups = this.getSelectedCharacterGroups();
     const requiredChars = selectedGroups.map(group => this.secureRandomChar(group));
     const allChars = selectedGroups.join('');
     const passwordChars = [...requiredChars];
 
     while (passwordChars.length < this.passwordLength()) {
-      passwordChars.push(this.secureRandomChar(allChars))
+      passwordChars.push(this.secureRandomChar(allChars));
     }
 
     const generatedPassword = this.secureShuffle(passwordChars).join('');
@@ -97,12 +67,16 @@ export class AppComponent {
   }
 
   private secureRandomIndex(max: number): number {
+    if (max <= 0) {
+      throw new Error('max must be greater than 0');
+    }
+
     const randomValues = new Uint32Array(1);
     const maxValid = Math.floor(0xffffffff / max) * max;
     let value: number;
     do {
       crypto.getRandomValues(randomValues);
-      value = randomValues[0]
+      value = randomValues[0];
     } while (value >= maxValid);
     return value % max;
   }
@@ -118,6 +92,25 @@ export class AppComponent {
     }
 
     return chars;
+  }
+
+  private getSelectedCharacterGroups(): string[] {
+    const selectedGroups: string[] = [];
+
+    if (this.isUpperCase()) {
+      selectedGroups.push(this.upperCaseChar);
+    }
+    if (this.isLowerCase()) {
+      selectedGroups.push(this.lowerCaseChar);
+    }
+    if (this.isNumber()) {
+      selectedGroups.push(this.numberChar);
+    }
+    if (this.isSpecialChar()) {
+      selectedGroups.push(this.specialChar);
+    }
+
+    return selectedGroups;
   }
 
   timeToBreakPassword(password: string, attemptsPerSecond: number = 1e9): void {
@@ -152,20 +145,16 @@ export class AppComponent {
     if (passwordLength >= this.minLengthValue && passwordLength <= 5) {
       this.tag.set('Very Weak');
       this.colorname.set('#FFDAB9');
-    }
-    if (passwordLength > 5 && passwordLength < 8) {
+    } else if (passwordLength > 5 && passwordLength < 8) {
       this.tag.set('Weak');
       this.colorname.set('#FFA07A');
-    }
-    if (passwordLength >= 8 && passwordLength < 10) {
+    } else if (passwordLength >= 8 && passwordLength < 10) {
       this.tag.set('Good');
       this.colorname.set('#FFD700');
-    }
-    if (passwordLength >= 10 && passwordLength < 12) {
+    } else if (passwordLength >= 10 && passwordLength < 12) {
       this.tag.set('Strong');
       this.colorname.set('#66CDAA');
-    }
-    if (passwordLength >= 12) {
+    } else {
       this.tag.set('Very Strong');
       this.colorname.set('#32CD32');
     }
@@ -180,36 +169,29 @@ export class AppComponent {
 
   updateOption(option: 'number' | 'uppercase' | 'lowercase' | 'special', event: Event): void {
     const checked = (event.target as HTMLInputElement).checked;
-    if (option === 'number') {
-      this.isNumber.set(checked);
-    }
-    if (option === 'uppercase') {
-      this.isUpperCase.set(checked);
-    }
-    if (option === 'lowercase') {
-      this.isLowerCase.set(checked);
-    }
-    if (option === 'special') {
-      this.isSpecialChar.set(checked);
+
+    switch (option) {
+      case 'number':
+        this.isNumber.set(checked);
+        break;
+      case 'uppercase':
+        this.isUpperCase.set(checked);
+        break;
+      case 'lowercase':
+        this.isLowerCase.set(checked);
+        break;
+      case 'special':
+        this.isSpecialChar.set(checked);
+        break;
     }
 
     this.generateRandomChar();
   }
 
-  copyText(requiredParam?: ['savedPassword', number]): void {
-    if (requiredParam) {
-      navigator.clipboard.writeText(this.previousSavedPass()[requiredParam[1]]).then(() => {
-        this.showToast();
-      }).catch(err => {
-        console.error('Failed to copy text: ', err);
-      });
-      return;
-    }
-
+  copyText(): void {
     this.buttonText.set('Copied');
     this.isDisabled.set(true);
     navigator.clipboard.writeText(this.generatedPassword()).then(() => {
-      this.previousSavedPass.update(passwords => [...passwords, this.generatedPassword()]);
       this.showToast();
     }).catch(err => {
       console.error('Failed to copy text: ', err);

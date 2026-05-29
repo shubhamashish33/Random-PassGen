@@ -8,7 +8,7 @@
       your account.</h5>
     <div class="container1">
       <div class="inputcontainer">
-        <input type="text" [ngModel]="generatedPassword()" disabled [ngStyle]="{'border': '1px solid ' + colorname()}">
+        <input type="text" [value]="generatedPassword()" disabled [style.border]="'1px solid ' + colorname()">
         <label id="tag" class="tag" [style.background-color]="colorname()">{{tag()}}</label>
       </div>
       <div class="btn-container">
