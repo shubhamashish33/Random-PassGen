@@ -1,11 +1,20 @@
-import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ChangeDetectorRef, Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+
 @Component({
   selector: 'app-root',
-  standalone: false,
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule
+  ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+  constructor(private changeDetectorRef: ChangeDetectorRef) { }
+
   name: string = 'random password generator'
   generatedPassword: string = ''
   passwordLength: number = 12;
@@ -142,10 +151,12 @@ export class AppComponent {
     if (requiredParam) {
       navigator.clipboard.writeText(this.previousSavedPass[requiredParam[1]]).then(() => {
         this.showToastMessage = true;
+        this.changeDetectorRef.markForCheck();
         setTimeout(() => {
           this.showToastMessage = false;
           this.buttonText = 'Copy';
           this.isDisabled = false;
+          this.changeDetectorRef.markForCheck();
         }, 3000)
       }).catch(err => {
         console.error('Failed to copy text: ', err);
@@ -160,10 +171,12 @@ export class AppComponent {
         localStorage.setItem('password', this.previousSavedPass);
       }
       this.showToastMessage = true;
+      this.changeDetectorRef.markForCheck();
       setTimeout(() => {
         this.showToastMessage = false;
         this.buttonText = 'Copy';
         this.isDisabled = false;
+        this.changeDetectorRef.markForCheck();
       }, 3000)
     }).catch(err => {
       console.error('Failed to copy text: ', err);
