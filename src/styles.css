@@ -1,27 +1,27 @@
-/* You can add global styles to this file, and also import other style files */
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
 * {
-    margin: 0px;
-    padding: 0px;
+    margin: 0;
+    padding: 0;
     box-sizing: border-box;
-    font-family: "Montserrat", sans-serif;
+}
+
+html {
+    color-scheme: light dark;
+    overflow-x: hidden;
 }
 
 body {
-    margin: 0px;
-    user-select: none;
-}
-
-footer {
-    text-align: center;
-    opacity: 20%;
-    bottom: 15px;
-    left: 50%;
+    min-height: 100vh;
+    margin: 0;
+    font-family: "Montserrat", Arial, sans-serif;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
     user-select: none;
 }
 
 a {
     text-decoration: none;
-    color: black;
+    color: inherit;
 }
