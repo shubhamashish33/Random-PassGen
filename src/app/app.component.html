@@ -58,18 +58,4 @@
       </div>
     </div>
   </div>
-  @if (showStoredPass() && previousSavedPass().length > 0) {
-    <div class="saved-password">
-      <h2>Recent Passwords</h2>
-      @for (password of previousSavedPass(); track password; let indx = $index) {
-        <div class="stored-password" (click)="copyText(['savedPassword', indx])">
-          <p>{{password}}</p>
-          <span class="material-symbols-outlined" (click)="removeSavedPassword(indx)">
-            cancel
-          </span>
-        </div>
-      }
-      <p style="opacity: 50%; font-size: 0.75rem;">Note: Don't worry password are not saved on our servers.</p>
-    </div>
-  }
 </div>

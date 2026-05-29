@@ -28,8 +28,6 @@ export class AppComponent {
   readonly rangeValue = signal(this.passwordLength());
   readonly timeStamp = signal('');
   readonly previousSavedPass = signal<string[]>([]);
-  readonly showStoredPass = signal(false);
-
   readonly upperCaseChar = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   readonly lowerCaseChar = 'abcdefghijklmnopqrstuvwxyz';
   readonly numberChar = '1234567890';
@@ -39,23 +37,6 @@ export class AppComponent {
 
   ngOnInit(): void {
     this.generateRandomChar();
-    this.getSavedPasswordOnLoad();
-  }
-
-  getSavedPasswordOnLoad(): void {
-    if (!this.showStoredPass()) {
-      return;
-    }
-
-    const savedLocalPass = localStorage.getItem('password');
-    if (savedLocalPass) {
-      this.previousSavedPass.set(savedLocalPass.split(','));
-      return;
-    }
-
-    if (this.previousSavedPass().length === 0) {
-      this.previousSavedPass.set([]);
-    }
   }
 
   generateRandomChar(): void {
@@ -173,15 +154,6 @@ export class AppComponent {
     this.generateRandomChar();
   }
 
-  removeSavedPassword(index: number): void {
-    if (!this.showStoredPass()) {
-      return;
-    }
-
-    this.previousSavedPass.update(passwords => passwords.filter((_, savedIndex) => savedIndex !== index));
-    localStorage.setItem('password', this.previousSavedPass().join(','));
-  }
-
   copyText(requiredParam?: ['savedPassword', number]): void {
     if (requiredParam) {
       navigator.clipboard.writeText(this.previousSavedPass()[requiredParam[1]]).then(() => {
@@ -196,9 +168,6 @@ export class AppComponent {
     this.isDisabled.set(true);
     navigator.clipboard.writeText(this.generatedPassword()).then(() => {
       this.previousSavedPass.update(passwords => [...passwords, this.generatedPassword()]);
-      if (this.showStoredPass()) {
-        localStorage.setItem('password', this.previousSavedPass().join(','));
-      }
       this.showToast();
     }).catch(err => {
       console.error('Failed to copy text: ', err);
