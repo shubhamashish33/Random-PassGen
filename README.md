@@ -5,7 +5,8 @@
 Random-PassGen is a web application designed to generate strong and secure passwords to protect user accounts. This project was developed using Angular.
 
 ## Screenshot
-![alt text](687_1x_shots_so.png)
+<img width="1920" height="1440" alt="141_1x_shots_so" src="https://github.com/user-attachments/assets/6379b0ec-5a42-4553-8275-7c72f1a43918" />
+
 
 ## Features
 
