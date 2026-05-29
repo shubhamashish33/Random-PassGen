@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -13,86 +13,92 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  constructor(private changeDetectorRef: ChangeDetectorRef) { }
+  readonly name = signal('random password generator');
+  readonly generatedPassword = signal('');
+  readonly passwordLength = signal(12);
+  readonly buttonText = signal('Copy');
+  readonly isUpperCase = signal(true);
+  readonly isLowerCase = signal(true);
+  readonly isNumber = signal(true);
+  readonly isSpecialChar = signal(false);
+  readonly isDisabled = signal(false);
+  readonly tag = signal('');
+  readonly colorname = signal('');
+  readonly showToastMessage = signal(false);
+  readonly rangeValue = signal(this.passwordLength());
+  readonly timeStamp = signal('');
+  readonly previousSavedPass = signal<string[]>([]);
+  readonly showStoredPass = signal(false);
 
-  name: string = 'random password generator'
-  generatedPassword: string = ''
-  passwordLength: number = 12;
-  upperCaseChar: string = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-  lowerCaseChar: string = "abcdefghijklmnopqrstuvwxyz";
-  numberChar: string = "1234567890";
-  specialChar: string = "!@#$%^&*()_+-=[]{}|\:;<>?/~,.'`";
-  isUpperCase: boolean = true;
-  buttonText = 'Copy';
-  isLowerCase: boolean = true;
-  isNumber: boolean = true;
-  isSpecialChar: boolean = false;
-  isDisabled: boolean = false;
-  tag: string = '';
-  colorname: string = '';
-  showToastMessage: boolean = false;
-  rangeValue: number = this.passwordLength;
-  minLengthValue: number = 4;
-  maximumLengthValue: number = 20;
-  timeStamp: string = '';
-  previousSavedPass: any = [];
-  showStoredPass: boolean = false;
+  readonly upperCaseChar = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  readonly lowerCaseChar = 'abcdefghijklmnopqrstuvwxyz';
+  readonly numberChar = '1234567890';
+  readonly specialChar = "!@#$%^&*()_+-=[]{}|\\:;<>?/~,.'`";
+  readonly minLengthValue = 4;
+  readonly maximumLengthValue = 20;
+
   ngOnInit(): void {
     this.generateRandomChar();
     this.getSavedPasswordOnLoad();
   }
-  getSavedPasswordOnLoad() {
-    if (this.showStoredPass) {
-      const savedLocalPass: string = localStorage.getItem('password');
-      if (savedLocalPass) {
-        const storedPass: string[] = savedLocalPass.split(",");
-        this.previousSavedPass = [...storedPass];
-      }
-      else if (this.previousSavedPass.length > 0) {
-        this.previousSavedPass;
-      }
-      else {
-        this.previousSavedPass = [];
-      }
-    }
-  }
-  generateRandomChar(): void {
-    if (!(this.isUpperCase || this.isLowerCase || this.isNumber || this.isSpecialChar)) {
-      this.generatedPassword = "Please select one value";
-      this.isDisabled = true;
-      this.tag = "NA";
-      this.colorname = "#ddd";
-      this.timeStamp = "NA";
+
+  getSavedPasswordOnLoad(): void {
+    if (!this.showStoredPass()) {
       return;
     }
-    else {
-      let availableChar: string = "";
-      if (this.isUpperCase) {
-        availableChar += this.upperCaseChar
-      }
-      if (this.isLowerCase) {
-        availableChar += this.lowerCaseChar
-      }
-      if (this.isNumber) {
-        availableChar += this.numberChar
-      }
-      if (this.isSpecialChar) {
-        availableChar += this.specialChar
-      }
-      this.onGeneratePassword(availableChar);
-      this.getTag();
-      this.isDisabled = false;
+
+    const savedLocalPass = localStorage.getItem('password');
+    if (savedLocalPass) {
+      this.previousSavedPass.set(savedLocalPass.split(','));
+      return;
+    }
+
+    if (this.previousSavedPass().length === 0) {
+      this.previousSavedPass.set([]);
     }
   }
+
+  generateRandomChar(): void {
+    if (!(this.isUpperCase() || this.isLowerCase() || this.isNumber() || this.isSpecialChar())) {
+      this.generatedPassword.set('Please select one value');
+      this.isDisabled.set(true);
+      this.tag.set('NA');
+      this.colorname.set('#ddd');
+      this.timeStamp.set('NA');
+      return;
+    }
+
+    let availableChar = '';
+    if (this.isUpperCase()) {
+      availableChar += this.upperCaseChar;
+    }
+    if (this.isLowerCase()) {
+      availableChar += this.lowerCaseChar;
+    }
+    if (this.isNumber()) {
+      availableChar += this.numberChar;
+    }
+    if (this.isSpecialChar()) {
+      availableChar += this.specialChar;
+    }
+
+    this.onGeneratePassword(availableChar);
+    this.getTag();
+    this.isDisabled.set(false);
+  }
+
   onGeneratePassword(password: string): void {
-    this.generatedPassword = '';
-    for (let i = 0; i < this.passwordLength; i++) {
-      this.generatedPassword += password.charAt((Math.floor(Math.random() * password.length)))
+    let generatedPassword = '';
+    for (let i = 0; i < this.passwordLength(); i++) {
+      generatedPassword += password.charAt(Math.floor(Math.random() * password.length));
     }
-    this.timeToBreakPassword(this.generatedPassword);
+
+    this.generatedPassword.set(generatedPassword);
+    this.timeToBreakPassword(generatedPassword);
   }
-  timeToBreakPassword(password: string, attemptsPerSecond: number = 1e9) {
-    let charset = "";
+
+  timeToBreakPassword(password: string, attemptsPerSecond: number = 1e9): void {
+    let charset = '';
     if (password.split('').some(char => this.lowerCaseChar.includes(char))) {
       charset += this.lowerCaseChar;
     }
@@ -105,6 +111,7 @@ export class AppComponent {
     if (password.split('').some(char => this.specialChar.includes(char))) {
       charset += this.specialChar;
     }
+
     const charsetSize = charset.length;
     const possibleCombinations = Math.pow(charsetSize, password.length);
     const secondsToBreak = possibleCombinations / attemptsPerSecond;
@@ -113,87 +120,113 @@ export class AppComponent {
     const hours = Math.floor((secondsToBreak % (60 * 60 * 24)) / (60 * 60));
     const minutes = Math.floor((secondsToBreak % (60 * 60)) / 60);
     const seconds = Math.floor(secondsToBreak % 60);
-    this.timeStamp = `${years} years, ${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
+    this.timeStamp.set(`${years} years, ${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`);
   }
+
   getTag(): void {
-    if (this.passwordLength >= this.minLengthValue && this.passwordLength <= 5) {
-      this.tag = 'Very Weak';
-      this.colorname = '#FFDAB9';
+    const passwordLength = this.passwordLength();
+
+    if (passwordLength >= this.minLengthValue && passwordLength <= 5) {
+      this.tag.set('Very Weak');
+      this.colorname.set('#FFDAB9');
     }
-    if (this.passwordLength > 5 && this.passwordLength < 8) {
-      this.tag = 'Weak'
-      this.colorname = "#FFA07A"
+    if (passwordLength > 5 && passwordLength < 8) {
+      this.tag.set('Weak');
+      this.colorname.set('#FFA07A');
     }
-    if (this.passwordLength >= 8 && this.passwordLength < 10) {
-      this.tag = 'Good'
-      this.colorname = "#FFD700"
+    if (passwordLength >= 8 && passwordLength < 10) {
+      this.tag.set('Good');
+      this.colorname.set('#FFD700');
     }
-    if (this.passwordLength >= 10 && this.passwordLength < 12) {
-      this.tag = 'Strong'
-      this.colorname = "#66CDAA";
+    if (passwordLength >= 10 && passwordLength < 12) {
+      this.tag.set('Strong');
+      this.colorname.set('#66CDAA');
     }
-    if (this.passwordLength >= 12) {
-      this.tag = 'Very Strong'
-      this.colorname = "#32CD32"
+    if (passwordLength >= 12) {
+      this.tag.set('Very Strong');
+      this.colorname.set('#32CD32');
     }
   }
-  valueChanged(e: { value: number }): void {
-    this.passwordLength = e.value;
+
+  valueChanged(event: Event): void {
+    const value = Number((event.target as HTMLInputElement).value);
+    this.passwordLength.set(value);
+    this.rangeValue.set(value);
     this.generateRandomChar();
   }
-  removeSavedPassword(index: any) {
-    if (this.showStoredPass) {
-      this.previousSavedPass.splice(index, 1);
-      localStorage.setItem('password', this.previousSavedPass);
+
+  updateOption(option: 'number' | 'uppercase' | 'lowercase' | 'special', event: Event): void {
+    const checked = (event.target as HTMLInputElement).checked;
+    if (option === 'number') {
+      this.isNumber.set(checked);
     }
+    if (option === 'uppercase') {
+      this.isUpperCase.set(checked);
+    }
+    if (option === 'lowercase') {
+      this.isLowerCase.set(checked);
+    }
+    if (option === 'special') {
+      this.isSpecialChar.set(checked);
+    }
+
+    this.generateRandomChar();
   }
-  copyText(requiredParam?: string) {
+
+  removeSavedPassword(index: number): void {
+    if (!this.showStoredPass()) {
+      return;
+    }
+
+    this.previousSavedPass.update(passwords => passwords.filter((_, savedIndex) => savedIndex !== index));
+    localStorage.setItem('password', this.previousSavedPass().join(','));
+  }
+
+  copyText(requiredParam?: ['savedPassword', number]): void {
     if (requiredParam) {
-      navigator.clipboard.writeText(this.previousSavedPass[requiredParam[1]]).then(() => {
-        this.showToastMessage = true;
-        this.changeDetectorRef.markForCheck();
-        setTimeout(() => {
-          this.showToastMessage = false;
-          this.buttonText = 'Copy';
-          this.isDisabled = false;
-          this.changeDetectorRef.markForCheck();
-        }, 3000)
+      navigator.clipboard.writeText(this.previousSavedPass()[requiredParam[1]]).then(() => {
+        this.showToast();
       }).catch(err => {
         console.error('Failed to copy text: ', err);
       });
       return;
     }
-    this.buttonText = 'Copied';
-    this.isDisabled = true;
-    navigator.clipboard.writeText(this.generatedPassword).then(() => {
-      this.previousSavedPass.push(this.generatedPassword);
-      if (this.showStoredPass) {
-        localStorage.setItem('password', this.previousSavedPass);
+
+    this.buttonText.set('Copied');
+    this.isDisabled.set(true);
+    navigator.clipboard.writeText(this.generatedPassword()).then(() => {
+      this.previousSavedPass.update(passwords => [...passwords, this.generatedPassword()]);
+      if (this.showStoredPass()) {
+        localStorage.setItem('password', this.previousSavedPass().join(','));
       }
-      this.showToastMessage = true;
-      this.changeDetectorRef.markForCheck();
-      setTimeout(() => {
-        this.showToastMessage = false;
-        this.buttonText = 'Copy';
-        this.isDisabled = false;
-        this.changeDetectorRef.markForCheck();
-      }, 3000)
+      this.showToast();
     }).catch(err => {
       console.error('Failed to copy text: ', err);
     });
   }
-  decreaseLength() {
-    if (this.rangeValue > this.minLengthValue && this.passwordLength > this.minLengthValue) {
-      this.passwordLength--;
-      this.rangeValue--;
+
+  decreaseLength(): void {
+    if (this.rangeValue() > this.minLengthValue && this.passwordLength() > this.minLengthValue) {
+      this.passwordLength.update(length => length - 1);
+      this.rangeValue.update(length => length - 1);
       this.generateRandomChar();
     }
   }
-  increaseLength() {
-    if (this.rangeValue < this.maximumLengthValue && this.passwordLength < this.maximumLengthValue) {
-      this.passwordLength++;
-      this.rangeValue++;
+
+  increaseLength(): void {
+    if (this.rangeValue() < this.maximumLengthValue && this.passwordLength() < this.maximumLengthValue) {
+      this.passwordLength.update(length => length + 1);
+      this.rangeValue.update(length => length + 1);
       this.generateRandomChar();
     }
+  }
+
+  private showToast(): void {
+    this.showToastMessage.set(true);
+    setTimeout(() => {
+      this.showToastMessage.set(false);
+      this.buttonText.set('Copy');
+      this.isDisabled.set(false);
+    }, 3000);
   }
 }

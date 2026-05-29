@@ -23,7 +23,7 @@ describe('AppComponent', () => {
   it('should use the app name', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.name).toEqual('random password generator');
+    expect(app.name()).toEqual('random password generator');
   });
 
   it('should render the app name', () => {

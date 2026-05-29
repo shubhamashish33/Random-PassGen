@@ -3,70 +3,73 @@
     <img src="../assets/images/lockimg.png" alt="">
   </div>
   <div class="rightcontainer">
-    <h1> {{name | titlecase}} </h1>
+    <h1> {{name() | titlecase}} </h1>
     <h5 style="text-align: center; padding: 20px; font-weight: 400;">Generate a strong and secure password to protect
       your account.</h5>
     <div class="container1">
       <div class="inputcontainer">
-        <input type="text" [(ngModel)]="generatedPassword" disabled [ngStyle]="{'border': '1px solid ' + colorname}">
-        <label id="tag" class="tag" [style.background-color]="colorname">{{tag}}</label>
+        <input type="text" [ngModel]="generatedPassword()" disabled [ngStyle]="{'border': '1px solid ' + colorname()}">
+        <label id="tag" class="tag" [style.background-color]="colorname()">{{tag()}}</label>
       </div>
       <div class="btn-container">
-        <button class="btn" (click)="copyText()" [disabled]="isDisabled" [style.background-color]="colorname">{{
-          buttonText }}</button>
+        <button class="btn" (click)="copyText()" [disabled]="isDisabled()" [style.background-color]="colorname()">{{
+          buttonText() }}</button>
       </div>
     </div>
     <div class="container2">
-      <div class="showtoashmessage" *ngIf="showToastMessage">
-        <h4> <svg style="vertical-align: middle;" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="30"
-            height="30" viewBox="0 0 48 48">
-            <path fill="#c8e6c9" d="M44,24c0,11.045-8.955,20-20,20S4,35.045,4,24S12.955,4,24,4S44,12.955,44,24z"></path>
-            <path fill="rgb(15, 72, 15)"
-              d="M34.586,14.586l-13.57,13.586l-5.602-5.586l-2.828,2.828l8.434,8.414l16.395-16.414L34.586,14.586z">
-            </path>
-          </svg> Password copied to clipboard!</h4>
-      </div>
+      @if (showToastMessage()) {
+        <div class="showtoashmessage">
+          <h4> <svg style="vertical-align: middle;" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="30"
+              height="30" viewBox="0 0 48 48">
+              <path fill="#c8e6c9" d="M44,24c0,11.045-8.955,20-20,20S4,35.045,4,24S12.955,4,24,4S44,12.955,44,24z"></path>
+              <path fill="rgb(15, 72, 15)"
+                d="M34.586,14.586l-13.57,13.586l-5.602-5.586l-2.828,2.828l8.434,8.414l16.395-16.414L34.586,14.586z">
+              </path>
+            </svg> Password copied to clipboard!</h4>
+        </div>
+      }
       <div class="rangecontainer">
-        <p class="timeStamp"> Time to Decrypt the password : {{this.timeStamp}}</p>
-        <p> Password Length: <b>{{passwordLength}}</b> </p>
+        <p class="timeStamp"> Time to Decrypt the password : {{timeStamp()}}</p>
+        <p> Password Length: <b>{{passwordLength()}}</b> </p>
         <div class="rangecontainer1">
-          <button (click)="decreaseLength()" class="rangeBtn" [disabled]="isDisabled">-</button>
-          <input type="range" id="rangeValue" [min]="minLengthValue" [max]="maximumLengthValue" value="12"
-            (input)="valueChanged($event.target)" [(ngModel)]="rangeValue" [disabled]="isDisabled">
-          <button (click)="increaseLength()" class="rangeBtn" [disabled]="isDisabled">+</button>
+          <button (click)="decreaseLength()" class="rangeBtn" [disabled]="isDisabled()">-</button>
+          <input type="range" id="rangeValue" [min]="minLengthValue" [max]="maximumLengthValue"
+            [value]="rangeValue()" (input)="valueChanged($event)" [disabled]="isDisabled()">
+          <button (click)="increaseLength()" class="rangeBtn" [disabled]="isDisabled()">+</button>
         </div>
       </div>
       <div class="labelcontainer">
         <label for="number" class="custom-checkbox">
-          <input type="checkbox" id="number" [(ngModel)]="isNumber" (change)="generateRandomChar()">
+          <input type="checkbox" id="number" [checked]="isNumber()" (change)="updateOption('number', $event)">
           <span class="checkmark"></span>
           123</label>
         <label for="uppercase" class="custom-checkbox">
-          <input type="checkbox" id="uppercase" [(ngModel)]="isUpperCase" (change)="generateRandomChar()">
+          <input type="checkbox" id="uppercase" [checked]="isUpperCase()" (change)="updateOption('uppercase', $event)">
           <span class="checkmark"></span>
           ABC</label>
         <label for="lowercase" class="custom-checkbox">
-          <input type="checkbox" id="lowercase" [(ngModel)]="isLowerCase" (change)="generateRandomChar()">
+          <input type="checkbox" id="lowercase" [checked]="isLowerCase()" (change)="updateOption('lowercase', $event)">
           <span class="checkmark"></span>
           abc</label>
         <label for="specialchar" class="custom-checkbox">
-          <input type="checkbox" id="specialchar" [(ngModel)]="isSpecialChar" (change)="generateRandomChar()">
+          <input type="checkbox" id="specialchar" [checked]="isSpecialChar()" (change)="updateOption('special', $event)">
           <span class="checkmark"></span>
           #$&</label>
       </div>
     </div>
   </div>
-  <ng-container *ngIf="showStoredPass && previousSavedPass && previousSavedPass.length > 0">
+  @if (showStoredPass() && previousSavedPass().length > 0) {
     <div class="saved-password">
       <h2>Recent Passwords</h2>
-      <div class="stored-password" *ngFor="let password of previousSavedPass; let indx = index"
-        (click)="copyText(['savedPassword', indx])">
-        <p>{{password}}</p>
-        <span class="material-symbols-outlined" (click)="removeSavedPassword(indx)">
-          cancel
-        </span>
-      </div>
+      @for (password of previousSavedPass(); track password; let indx = $index) {
+        <div class="stored-password" (click)="copyText(['savedPassword', indx])">
+          <p>{{password}}</p>
+          <span class="material-symbols-outlined" (click)="removeSavedPassword(indx)">
+            cancel
+          </span>
+        </div>
+      }
       <p style="opacity: 50%; font-size: 0.75rem;">Note: Don't worry password are not saved on our servers.</p>
     </div>
-  </ng-container>
+  }
 </div>
