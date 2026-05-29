@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 @Component({
   selector: 'app-root',
+  standalone: false,
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
@@ -18,13 +19,13 @@ export class AppComponent {
   isNumber: boolean = true;
   isSpecialChar: boolean = false;
   isDisabled: boolean = false;
-  tag: string;
-  colorname: string;
+  tag: string = '';
+  colorname: string = '';
   showToastMessage: boolean = false;
   rangeValue: number = this.passwordLength;
   minLengthValue: number = 4;
   maximumLengthValue: number = 20;
-  timeStamp: string;
+  timeStamp: string = '';
   previousSavedPass: any = [];
   showStoredPass: boolean = false;
   ngOnInit(): void {
@@ -127,7 +128,7 @@ export class AppComponent {
       this.colorname = "#32CD32"
     }
   }
-  valueChanged(e): void {
+  valueChanged(e: { value: number }): void {
     this.passwordLength = e.value;
     this.generateRandomChar();
   }
