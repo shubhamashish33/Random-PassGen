@@ -63,22 +63,40 @@ export class AppComponent {
       availableChar += this.specialChar;
     }
 
-    this.onGeneratePassword(availableChar);
+    this.onGeneratePassword();
     this.getTag();
     this.isDisabled.set(false);
   }
 
-  onGeneratePassword(password: string): void {
-    let generatedPassword = '';
-    for (let i = 0; i < this.passwordLength(); i++) {
-      generatedPassword += password.charAt(this.secureRandomIndex(password.length));
+  onGeneratePassword(): void {
+    const selectedGroups: string[] = [];
+
+    if (this.isUpperCase()) {
+      selectedGroups.push(this.upperCaseChar);
+    }
+    if (this.isLowerCase()) {
+      selectedGroups.push(this.lowerCaseChar);
+    }
+    if (this.isNumber()) {
+      selectedGroups.push(this.numberChar);
+    }
+    if (this.isSpecialChar()) {
+      selectedGroups.push(this.specialChar);
+    }
+    const requiredChars = selectedGroups.map(group => this.secureRandomChar(group));
+    const allChars = selectedGroups.join('');
+    const passwordChars = [...requiredChars];
+
+    while (passwordChars.length < this.passwordLength()) {
+      passwordChars.push(this.secureRandomChar(allChars))
     }
 
+    const generatedPassword = this.secureShuffle(passwordChars).join('');
     this.generatedPassword.set(generatedPassword);
     this.timeToBreakPassword(generatedPassword);
   }
 
-  secureRandomIndex(max: number): number {
+  private secureRandomIndex(max: number): number {
     const randomValues = new Uint32Array(1);
     const maxValid = Math.floor(0xffffffff / max) * max;
     let value: number;
@@ -87,6 +105,19 @@ export class AppComponent {
       value = randomValues[0]
     } while (value >= maxValid);
     return value % max;
+  }
+
+  private secureRandomChar(charset: string): string {
+    return charset.charAt(this.secureRandomIndex(charset.length));
+  }
+
+  private secureShuffle(chars: string[]): string[] {
+    for (let i = chars.length - 1; i > 0; i--) {
+      const j = this.secureRandomIndex(i + 1);
+      [chars[i], chars[j]] = [chars[j], chars[i]];
+    }
+
+    return chars;
   }
 
   timeToBreakPassword(password: string, attemptsPerSecond: number = 1e9): void {
