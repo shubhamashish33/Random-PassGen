@@ -1,61 +1,100 @@
-<div class="bigcontainer">
-  <div class="leftcontainer">
-    <img src="../assets/images/lockimg.png" alt="">
-  </div>
-  <div class="rightcontainer">
-    <h1> {{name() | titlecase}} </h1>
-    <h5 style="text-align: center; padding: 20px; font-weight: 400;">Generate a strong and secure password to protect
-      your account.</h5>
-    <div class="container1">
-      <div class="inputcontainer">
-        <input type="text" [value]="generatedPassword()" disabled [style.border]="'1px solid ' + colorname()">
-        <label id="tag" class="tag" [style.background-color]="colorname()">{{tag()}}</label>
+<main class="page-shell">
+  <section class="app-layout" aria-labelledby="page-title">
+    <aside class="visual-panel" aria-hidden="true">
+      <div class="visual-content">
+        <div class="visual-frame">
+          <img src="../assets/images/lockimg.png" alt="">
+        </div>
+        <div class="visual-copy">
+          <span>Crypto-safe generation</span>
+          <strong>Every selected character set is represented.</strong>
+        </div>
       </div>
-      <div class="btn-container">
-        <button class="btn" (click)="copyText()" [disabled]="isDisabled()" [style.background-color]="colorname()">{{
-          buttonText() }}</button>
+      <div class="security-summary">
+        <span class="summary-label">Current Strength</span>
+        <strong [style.color]="colorname()">{{tag()}}</strong>
       </div>
-    </div>
-    <div class="container2">
+    </aside>
+
+    <section class="generator-panel">
+      <header class="panel-header">
+        <p class="eyebrow">Secure utility</p>
+        <h1 id="page-title">{{name() | titlecase}}</h1>
+        <p class="intro">Create a password with required character coverage and browser-grade cryptographic randomness.</p>
+      </header>
+
+      <div class="password-output">
+        <div class="password-field">
+          <span class="field-label">Generated password</span>
+          <input type="text" [value]="generatedPassword()" readonly [style.border-color]="colorname()">
+          <label id="tag" class="tag" [style.background-color]="colorname()">{{tag()}}</label>
+        </div>
+        <button class="copy-button" type="button" (click)="copyText()" [disabled]="isDisabled()">
+          <span>{{buttonText()}}</span>
+        </button>
+      </div>
+
       @if (showToastMessage()) {
-        <div class="showtoashmessage">
-          <h4> <svg style="vertical-align: middle;" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="30"
-              height="30" viewBox="0 0 48 48">
-              <path fill="#c8e6c9" d="M44,24c0,11.045-8.955,20-20,20S4,35.045,4,24S12.955,4,24,4S44,12.955,44,24z"></path>
-              <path fill="rgb(15, 72, 15)"
-                d="M34.586,14.586l-13.57,13.586l-5.602-5.586l-2.828,2.828l8.434,8.414l16.395-16.414L34.586,14.586z">
-              </path>
-            </svg> Password copied to clipboard!</h4>
+        <div class="toast" role="status" aria-live="polite">
+          <svg aria-hidden="true" viewBox="0 0 48 48">
+            <path fill="currentColor" d="M44 24c0 11.05-8.95 20-20 20S4 35.05 4 24 12.95 4 24 4s20 8.95 20 20Z"></path>
+            <path fill="var(--toast-check)" d="m21.02 27.17-5.61-5.59-2.82 2.83 8.43 8.41 16.39-16.41-2.82-2.82-13.57 13.58Z"></path>
+          </svg>
+          <span>Password copied to clipboard</span>
         </div>
       }
-      <div class="rangecontainer">
-        <p class="timeStamp"> Time to Decrypt the password : {{timeStamp()}}</p>
-        <p> Password Length: <b>{{passwordLength()}}</b> </p>
-        <div class="rangecontainer1">
-          <button (click)="decreaseLength()" class="rangeBtn" [disabled]="isDisabled()">-</button>
-          <input type="range" id="rangeValue" [min]="minLengthValue" [max]="maximumLengthValue"
-            [value]="rangeValue()" (input)="valueChanged($event)" [disabled]="isDisabled()">
-          <button (click)="increaseLength()" class="rangeBtn" [disabled]="isDisabled()">+</button>
+
+      <section class="details-panel" aria-label="Password settings">
+        <div class="stat-row">
+          <span>Time to decrypt</span>
+          <strong>{{timeStamp()}}</strong>
         </div>
-      </div>
-      <div class="labelcontainer">
-        <label for="number" class="custom-checkbox">
-          <input type="checkbox" id="number" [checked]="isNumber()" (change)="updateOption('number', $event)">
-          <span class="checkmark"></span>
-          123</label>
-        <label for="uppercase" class="custom-checkbox">
-          <input type="checkbox" id="uppercase" [checked]="isUpperCase()" (change)="updateOption('uppercase', $event)">
-          <span class="checkmark"></span>
-          ABC</label>
-        <label for="lowercase" class="custom-checkbox">
-          <input type="checkbox" id="lowercase" [checked]="isLowerCase()" (change)="updateOption('lowercase', $event)">
-          <span class="checkmark"></span>
-          abc</label>
-        <label for="specialchar" class="custom-checkbox">
-          <input type="checkbox" id="specialchar" [checked]="isSpecialChar()" (change)="updateOption('special', $event)">
-          <span class="checkmark"></span>
-          #$&</label>
-      </div>
-    </div>
-  </div>
-</div>
+
+        <div class="length-control">
+          <div class="control-heading">
+            <span>Password length</span>
+            <strong>{{passwordLength()}}</strong>
+          </div>
+          <div class="range-row">
+            <button type="button" (click)="decreaseLength()" class="range-button" [disabled]="isDisabled()" aria-label="Decrease password length">-</button>
+            <input type="range" id="rangeValue" [min]="minLengthValue" [max]="maximumLengthValue"
+              [value]="rangeValue()" (input)="valueChanged($event)" [disabled]="isDisabled()">
+            <button type="button" (click)="increaseLength()" class="range-button" [disabled]="isDisabled()" aria-label="Increase password length">+</button>
+          </div>
+        </div>
+
+        <fieldset class="option-grid">
+          <legend>Character sets</legend>
+
+          <label for="number" class="option-toggle">
+            <input type="checkbox" id="number" [checked]="isNumber()" (change)="updateOption('number', $event)">
+            <span class="checkmark"></span>
+            <span>Numbers</span>
+            <strong>123</strong>
+          </label>
+
+          <label for="uppercase" class="option-toggle">
+            <input type="checkbox" id="uppercase" [checked]="isUpperCase()" (change)="updateOption('uppercase', $event)">
+            <span class="checkmark"></span>
+            <span>Uppercase</span>
+            <strong>ABC</strong>
+          </label>
+
+          <label for="lowercase" class="option-toggle">
+            <input type="checkbox" id="lowercase" [checked]="isLowerCase()" (change)="updateOption('lowercase', $event)">
+            <span class="checkmark"></span>
+            <span>Lowercase</span>
+            <strong>abc</strong>
+          </label>
+
+          <label for="specialchar" class="option-toggle">
+            <input type="checkbox" id="specialchar" [checked]="isSpecialChar()" (change)="updateOption('special', $event)">
+            <span class="checkmark"></span>
+            <span>Symbols</span>
+            <strong>#$&</strong>
+          </label>
+        </fieldset>
+      </section>
+    </section>
+  </section>
+</main>
