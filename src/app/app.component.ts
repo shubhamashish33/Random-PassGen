@@ -71,11 +71,22 @@ export class AppComponent {
   onGeneratePassword(password: string): void {
     let generatedPassword = '';
     for (let i = 0; i < this.passwordLength(); i++) {
-      generatedPassword += password.charAt(Math.floor(Math.random() * password.length));
+      generatedPassword += password.charAt(this.secureRandomIndex(password.length));
     }
 
     this.generatedPassword.set(generatedPassword);
     this.timeToBreakPassword(generatedPassword);
+  }
+
+  secureRandomIndex(max: number): number {
+    const randomValues = new Uint32Array(1);
+    const maxValid = Math.floor(0xffffffff / max) * max;
+    let value: number;
+    do {
+      crypto.getRandomValues(randomValues);
+      value = randomValues[0]
+    } while (value >= maxValid);
+    return value % max;
   }
 
   timeToBreakPassword(password: string, attemptsPerSecond: number = 1e9): void {
